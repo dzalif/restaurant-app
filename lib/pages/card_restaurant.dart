@@ -15,36 +15,38 @@ class CardRestaurant extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
-      child: Card(
-        elevation: 4,
-        child: Column(
-          children: [
-            Image.network('$_baseUrlImage/${data.pictureId}',
-              width: MediaQuery.of(context).size.width),
-            ListTile(
-              contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              title: Text(
-                data.name,
+      child: GestureDetector(
+        onTap: () {
+          Navigation.intentWithData(DetailRestaurantPage.routeName, data.id);
+        },
+        child: Card(
+          elevation: 4,
+          child: Column(
+            children: [
+              Image.network('$_baseUrlImage/${data.pictureId}',
+                width: MediaQuery.of(context).size.width),
+              ListTile(
+                contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                title: Text(
+                  data.name,
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(data.city),
+                    const SizedBox(height: 4),
+                    Row(children: [
+                      const Icon(Icons.star, color: Colors.amber, size: 14,),
+                      const SizedBox(width: 4),
+                      Text(data.rating.toString(), style: const TextStyle(color: Colors.amber),)
+                    ],)
+                  ],
+                ),
+                trailing: const Icon(Icons.arrow_forward),
               ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(data.city),
-                  const SizedBox(height: 4),
-                  Row(children: [
-                    const Icon(Icons.star, color: Colors.amber, size: 14,),
-                    const SizedBox(width: 4),
-                    Text(data.rating.toString(), style: const TextStyle(color: Colors.amber),)
-                  ],)
-                ],
-              ),
-              trailing: const Icon(Icons.arrow_forward),
-              onTap: () {
-                Navigation.intentWithData(DetailRestaurantPage.routeName, data.id);
-              },
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

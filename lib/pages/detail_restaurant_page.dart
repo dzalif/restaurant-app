@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/data/model/detail_restaurant_response.dart';
+import 'package:restaurant_app/pages/detail_review_page.dart';
 import 'package:restaurant_app/provider/detail_restaurant_provider.dart';
+
+import '../common/navigation.dart';
 
 class DetailRestaurantPage extends StatefulWidget {
   static const routeName = '/detail_restaurant';
@@ -77,11 +80,16 @@ class _DetailRestaurantPageState extends State<DetailRestaurantPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                             const Text('Reviews', style: TextStyle(fontWeight: FontWeight.bold),),
-                            Row(
-                              children: const [
-                                Text('See All', style: TextStyle(color: Colors.amber),),
-                                Icon(Icons.arrow_forward, color: Colors.amber, size: 14,)
-                              ],
+                            GestureDetector(
+                              onTap: () {
+                                Navigation.intentWithData(DetailReviewPage.routeName, state.result!.restaurant.customerReviews);
+                              },
+                              child: Row(
+                                children: const [
+                                  Text('See All', style: TextStyle(color: Colors.amber),),
+                                  Icon(Icons.arrow_forward, color: Colors.amber, size: 14,)
+                                ],
+                              ),
                             )
                           ],),
                           const SizedBox(height: 8),
@@ -193,12 +201,12 @@ class _DetailRestaurantPageState extends State<DetailRestaurantPage> {
           height: 150,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: 5,
+            itemCount: customerReviews.length < 3 ? customerReviews.length : 3,
             itemBuilder: (context, index) {
               var data = customerReviews[index];
               return Padding(
                 padding: const EdgeInsets.only(right: 8.0),
-                child: Card(child: Container(
+                child: Card(child: SizedBox(
                   width: 200,
                   child: ListTile(
                     contentPadding:

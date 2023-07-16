@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/data/api/api_service.dart';
 import 'package:restaurant_app/pages/detail_restaurant_page.dart';
+import 'package:restaurant_app/pages/detail_review_page.dart';
 import 'package:restaurant_app/pages/home_page.dart';
 import 'package:restaurant_app/pages/search_page.dart';
 import 'package:restaurant_app/provider/detail_restaurant_provider.dart';
@@ -37,6 +38,8 @@ class RestaurantApp extends StatelessWidget {
               const SearchPage(),
           DetailRestaurantPage.routeName: (context) =>
               DetailRestaurantPage(id: ModalRoute.of(context)?.settings.arguments as String,),
+          DetailReviewPage.routeName: (context) =>
+              DetailReviewPage(reviews: ModalRoute.of(context)?.settings.arguments as dynamic,),
         },
       ),
     );
