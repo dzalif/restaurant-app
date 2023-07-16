@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_app/pages/search_page.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
 
+import '../common/navigation.dart';
 import 'card_restaurant.dart';
 
 class RestaurantPage extends StatelessWidget {
@@ -10,7 +12,16 @@ class RestaurantPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _buildList(),
+      body: Container(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            _searchBar(),
+            const SizedBox(height: 16),
+            _buildList()
+          ],
+        ),
+      ),
     );
   }
 
@@ -18,10 +29,12 @@ class RestaurantPage extends StatelessWidget {
     return Consumer<RestaurantProvider>(
       builder: (context, state, _) {
         if (state.state == ResultState.loading) {
-          return const Center(child: CircularProgressIndicator(color: Colors.white,));
+          return const Expanded(
+            child: Center(
+                child: CircularProgressIndicator()),
+          );
         } else if (state.state == ResultState.hasData) {
-          return Container(
-            padding: const EdgeInsets.all(16),
+          return Expanded(
             child: ListView.builder(
               shrinkWrap: true,
               itemCount: state.result.restaurants.length,
@@ -53,5 +66,20 @@ class RestaurantPage extends StatelessWidget {
       },
     );
   }
-}
 
+  _searchBar() {
+    return GestureDetector(
+      onTap: () {
+        Navigation.intent(SearchPage.routeName);
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 8),
+        decoration: BoxDecoration(color: Colors.grey[200], border: Border.all(color: Colors.black54), borderRadius: BorderRadius.circular(12)),
+        child: Row(children: [
+          Container(child: const Icon(Icons.search), padding: const EdgeInsets.symmetric(horizontal: 12.0)),
+          const Expanded(child: TextField(enabled: false, decoration: InputDecoration(hintText: 'Search restaurant..', border: InputBorder.none),),)
+        ],),
+      ),
+    );
+  }
+}
