@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:restaurant_app/components/bottom_nav_bar.dart';
 import 'package:restaurant_app/pages/restaurant_page.dart';
+import 'package:restaurant_app/provider/restaurant_provider.dart';
 
+import '../data/api/api_service.dart';
 import 'favorite_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,24 +19,26 @@ class _HomePageState extends State<HomePage> {
 
   //pages to display
   final List<Widget> _pages = [
-    const RestaurantPage(),
+    ChangeNotifierProvider<RestaurantProvider>(
+      create: (_) => RestaurantProvider(apiService: ApiService()),
+      child: const RestaurantPage(),
+    ),
     const FavoritePage(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.indigo[300],
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.indigo[300], elevation: 0, actions: [
+        backgroundColor: Colors.grey[50], elevation: 0, actions: [
           Padding(
             padding: const EdgeInsets.only(right: 20),
             child: Row(
               children: const [
-                Icon(Icons.settings),
+                Icon(Icons.settings, color: Colors.black54,),
                 SizedBox(width: 4,),
-                Text('Settings')
+                Text('Settings', style: TextStyle(color: Colors.black54),)
               ],
             ),
           )
