@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../common/navigation.dart';
 import '../data/model/list_restaurant_response.dart';
+import 'detail_restaurant_page.dart';
+
 
 class CardRestaurant extends StatelessWidget {
+  static const _baseUrlImage = 'https://restaurant-api.dicoding.dev/images/medium';
   final Restaurant data;
 
   const CardRestaurant({Key? key, required this.data}) : super(key: key);
@@ -15,7 +19,7 @@ class CardRestaurant extends StatelessWidget {
         elevation: 4,
         child: Column(
           children: [
-            Image.network('https://restaurant-api.dicoding.dev/images/medium/${data.pictureId}',
+            Image.network('$_baseUrlImage/${data.pictureId}',
               width: MediaQuery.of(context).size.width),
             ListTile(
               contentPadding:
@@ -37,7 +41,7 @@ class CardRestaurant extends StatelessWidget {
               ),
               trailing: const Icon(Icons.arrow_forward),
               onTap: () {
-
+                Navigation.intentWithData(DetailRestaurantPage.routeName, data.id);
               },
             ),
           ],
