@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../common/navigation.dart';
-import '../data/model/list_restaurant_response.dart';
 import 'detail_restaurant_page.dart';
 
 
 class CardRestaurant extends StatelessWidget {
   static const _baseUrlImage = 'https://restaurant-api.dicoding.dev/images/medium';
-  final Restaurant data;
+  final dynamic data;
 
   const CardRestaurant({Key? key, required this.data}) : super(key: key);
 

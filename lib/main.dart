@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/data/api/api_service.dart';
+import 'package:restaurant_app/db/app_database.dart';
 import 'package:restaurant_app/pages/detail_restaurant_page.dart';
 import 'package:restaurant_app/pages/detail_review_page.dart';
 import 'package:restaurant_app/pages/home_page.dart';
 import 'package:restaurant_app/pages/search_page.dart';
+import 'package:restaurant_app/provider/add_restaurant_favorite_provider.dart';
+import 'package:restaurant_app/provider/detail_restaurant_favorite_provider.dart';
 import 'package:restaurant_app/provider/detail_restaurant_provider.dart';
 import 'package:restaurant_app/provider/search_provider.dart';
 
@@ -23,6 +26,8 @@ class RestaurantApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => SearchProvider(apiService: ApiService())),
         ChangeNotifierProvider(create: (_) => DetailRestaurantProvider(apiService: ApiService())),
+        ChangeNotifierProvider(create: (_) => AddRestaurantFavoriteProvider(appDatabase: AppDatabase())),
+        ChangeNotifierProvider(create: (_) => DetailRestaurantFavoriteProvider(appDatabase: AppDatabase())),
       ],
       child: MaterialApp(
         navigatorKey: navigatorKey,

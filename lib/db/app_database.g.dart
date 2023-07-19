@@ -9,11 +9,10 @@ class $RestaurantTableTable extends RestaurantTable
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $RestaurantTableTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _restaurantIdMeta =
-      const VerificationMeta('restaurantId');
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<String> restaurantId = GeneratedColumn<String>(
-      'restaurant_id', aliasedName, false,
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
@@ -56,7 +55,7 @@ class $RestaurantTableTable extends RestaurantTable
           }));
   @override
   List<GeneratedColumn> get $columns =>
-      [restaurantId, name, description, pictureId, city, rating, isFavorite];
+      [id, name, description, pictureId, city, rating, isFavorite];
   @override
   String get aliasedName => _alias ?? 'restaurant_table';
   @override
@@ -67,13 +66,10 @@ class $RestaurantTableTable extends RestaurantTable
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
-    if (data.containsKey('restaurant_id')) {
-      context.handle(
-          _restaurantIdMeta,
-          restaurantId.isAcceptableOrUnknown(
-              data['restaurant_id']!, _restaurantIdMeta));
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
-      context.missing(_restaurantIdMeta);
+      context.missing(_idMeta);
     }
     if (data.containsKey('name')) {
       context.handle(
@@ -119,13 +115,13 @@ class $RestaurantTableTable extends RestaurantTable
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => const {};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
   RestaurantTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return RestaurantTableData(
-      restaurantId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}restaurant_id'])!,
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       description: attachedDatabase.typeMapping
@@ -149,7 +145,7 @@ class $RestaurantTableTable extends RestaurantTable
 
 class RestaurantTableData extends DataClass
     implements Insertable<RestaurantTableData> {
-  final String restaurantId;
+  final String id;
   final String name;
   final String description;
   final String pictureId;
@@ -157,7 +153,7 @@ class RestaurantTableData extends DataClass
   final double rating;
   final bool isFavorite;
   const RestaurantTableData(
-      {required this.restaurantId,
+      {required this.id,
       required this.name,
       required this.description,
       required this.pictureId,
@@ -167,7 +163,7 @@ class RestaurantTableData extends DataClass
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['restaurant_id'] = Variable<String>(restaurantId);
+    map['id'] = Variable<String>(id);
     map['name'] = Variable<String>(name);
     map['description'] = Variable<String>(description);
     map['picture_id'] = Variable<String>(pictureId);
@@ -179,7 +175,7 @@ class RestaurantTableData extends DataClass
 
   RestaurantTableCompanion toCompanion(bool nullToAbsent) {
     return RestaurantTableCompanion(
-      restaurantId: Value(restaurantId),
+      id: Value(id),
       name: Value(name),
       description: Value(description),
       pictureId: Value(pictureId),
@@ -193,7 +189,7 @@ class RestaurantTableData extends DataClass
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return RestaurantTableData(
-      restaurantId: serializer.fromJson<String>(json['restaurantId']),
+      id: serializer.fromJson<String>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       description: serializer.fromJson<String>(json['description']),
       pictureId: serializer.fromJson<String>(json['pictureId']),
@@ -206,7 +202,7 @@ class RestaurantTableData extends DataClass
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'restaurantId': serializer.toJson<String>(restaurantId),
+      'id': serializer.toJson<String>(id),
       'name': serializer.toJson<String>(name),
       'description': serializer.toJson<String>(description),
       'pictureId': serializer.toJson<String>(pictureId),
@@ -217,7 +213,7 @@ class RestaurantTableData extends DataClass
   }
 
   RestaurantTableData copyWith(
-          {String? restaurantId,
+          {String? id,
           String? name,
           String? description,
           String? pictureId,
@@ -225,7 +221,7 @@ class RestaurantTableData extends DataClass
           double? rating,
           bool? isFavorite}) =>
       RestaurantTableData(
-        restaurantId: restaurantId ?? this.restaurantId,
+        id: id ?? this.id,
         name: name ?? this.name,
         description: description ?? this.description,
         pictureId: pictureId ?? this.pictureId,
@@ -236,7 +232,7 @@ class RestaurantTableData extends DataClass
   @override
   String toString() {
     return (StringBuffer('RestaurantTableData(')
-          ..write('restaurantId: $restaurantId, ')
+          ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('description: $description, ')
           ..write('pictureId: $pictureId, ')
@@ -248,13 +244,13 @@ class RestaurantTableData extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(
-      restaurantId, name, description, pictureId, city, rating, isFavorite);
+  int get hashCode =>
+      Object.hash(id, name, description, pictureId, city, rating, isFavorite);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is RestaurantTableData &&
-          other.restaurantId == this.restaurantId &&
+          other.id == this.id &&
           other.name == this.name &&
           other.description == this.description &&
           other.pictureId == this.pictureId &&
@@ -264,7 +260,7 @@ class RestaurantTableData extends DataClass
 }
 
 class RestaurantTableCompanion extends UpdateCompanion<RestaurantTableData> {
-  final Value<String> restaurantId;
+  final Value<String> id;
   final Value<String> name;
   final Value<String> description;
   final Value<String> pictureId;
@@ -273,7 +269,7 @@ class RestaurantTableCompanion extends UpdateCompanion<RestaurantTableData> {
   final Value<bool> isFavorite;
   final Value<int> rowid;
   const RestaurantTableCompanion({
-    this.restaurantId = const Value.absent(),
+    this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.description = const Value.absent(),
     this.pictureId = const Value.absent(),
@@ -283,7 +279,7 @@ class RestaurantTableCompanion extends UpdateCompanion<RestaurantTableData> {
     this.rowid = const Value.absent(),
   });
   RestaurantTableCompanion.insert({
-    required String restaurantId,
+    required String id,
     required String name,
     required String description,
     required String pictureId,
@@ -291,7 +287,7 @@ class RestaurantTableCompanion extends UpdateCompanion<RestaurantTableData> {
     required double rating,
     required bool isFavorite,
     this.rowid = const Value.absent(),
-  })  : restaurantId = Value(restaurantId),
+  })  : id = Value(id),
         name = Value(name),
         description = Value(description),
         pictureId = Value(pictureId),
@@ -299,7 +295,7 @@ class RestaurantTableCompanion extends UpdateCompanion<RestaurantTableData> {
         rating = Value(rating),
         isFavorite = Value(isFavorite);
   static Insertable<RestaurantTableData> custom({
-    Expression<String>? restaurantId,
+    Expression<String>? id,
     Expression<String>? name,
     Expression<String>? description,
     Expression<String>? pictureId,
@@ -309,7 +305,7 @@ class RestaurantTableCompanion extends UpdateCompanion<RestaurantTableData> {
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
-      if (restaurantId != null) 'restaurant_id': restaurantId,
+      if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (pictureId != null) 'picture_id': pictureId,
@@ -321,7 +317,7 @@ class RestaurantTableCompanion extends UpdateCompanion<RestaurantTableData> {
   }
 
   RestaurantTableCompanion copyWith(
-      {Value<String>? restaurantId,
+      {Value<String>? id,
       Value<String>? name,
       Value<String>? description,
       Value<String>? pictureId,
@@ -330,7 +326,7 @@ class RestaurantTableCompanion extends UpdateCompanion<RestaurantTableData> {
       Value<bool>? isFavorite,
       Value<int>? rowid}) {
     return RestaurantTableCompanion(
-      restaurantId: restaurantId ?? this.restaurantId,
+      id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
       pictureId: pictureId ?? this.pictureId,
@@ -344,8 +340,8 @@ class RestaurantTableCompanion extends UpdateCompanion<RestaurantTableData> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (restaurantId.present) {
-      map['restaurant_id'] = Variable<String>(restaurantId.value);
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
@@ -374,7 +370,7 @@ class RestaurantTableCompanion extends UpdateCompanion<RestaurantTableData> {
   @override
   String toString() {
     return (StringBuffer('RestaurantTableCompanion(')
-          ..write('restaurantId: $restaurantId, ')
+          ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('description: $description, ')
           ..write('pictureId: $pictureId, ')

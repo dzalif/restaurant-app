@@ -33,6 +33,7 @@ class DetailRestaurant {
   Menus menus;
   double rating;
   List<CustomerReview> customerReviews;
+  bool? isFavorite;
 
   DetailRestaurant({
     required this.id,

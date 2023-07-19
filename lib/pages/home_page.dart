@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/components/bottom_nav_bar.dart';
+import 'package:restaurant_app/db/app_database.dart';
 import 'package:restaurant_app/pages/restaurant_page.dart';
+import 'package:restaurant_app/provider/restaurant_favorite_provider.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
 
 import '../data/api/api_service.dart';
@@ -23,7 +25,9 @@ class _HomePageState extends State<HomePage> {
       create: (_) => RestaurantProvider(apiService: ApiService()),
       child: const RestaurantPage(),
     ),
-    const FavoritePage(),
+    ChangeNotifierProvider<RestaurantFavoriteProvider>(
+      create: (_) => RestaurantFavoriteProvider(appDatabase: AppDatabase()),
+        child: const FavoritePage()),
   ];
 
   @override
@@ -31,11 +35,11 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.grey[50], elevation: 0, actions: [
+        backgroundColor: Colors.grey[50], elevation: 0, actions: const [
           Padding(
-            padding: const EdgeInsets.only(right: 20),
+            padding: EdgeInsets.only(right: 20),
             child: Row(
-              children: const [
+              children: [
                 Icon(Icons.settings, color: Colors.black54,),
                 SizedBox(width: 4,),
                 Text('Settings', style: TextStyle(color: Colors.black54),)

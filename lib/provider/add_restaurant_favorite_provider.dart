@@ -5,10 +5,10 @@ import 'package:restaurant_app/db/app_database.dart';
 
 enum ResultFavoriteState { loading, noData, hasData, error }
 
-class DetailRestaurantFavoriteProvider extends ChangeNotifier {
+class AddRestaurantFavoriteProvider extends ChangeNotifier {
   final AppDatabase appDatabase;
 
-  DetailRestaurantFavoriteProvider({required this.appDatabase});
+  AddRestaurantFavoriteProvider({required this.appDatabase});
 
   RestaurantTableData? _restaurantResult;
   ResultFavoriteState? _state;
@@ -20,11 +20,11 @@ class DetailRestaurantFavoriteProvider extends ChangeNotifier {
 
   ResultFavoriteState? get state => _state;
 
-  Future<dynamic> getDetailRestaurantFavorite(String id) async {
+  Future<dynamic> addRestaurantToFavorite(RestaurantTableData restaurant) async {
     try {
       _state = ResultFavoriteState.loading;
       notifyListeners();
-      final data = await appDatabase.restaurantDao.getRestaurantById(id);
+      final data = await appDatabase.restaurantDao.insertRestaurant(restaurant);
       _state = ResultFavoriteState.hasData;
       notifyListeners();
       return _restaurantResult = data;
