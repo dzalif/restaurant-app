@@ -45,9 +45,9 @@ class $RestaurantTableTable extends RestaurantTable
       const VerificationMeta('isFavorite');
   @override
   late final GeneratedColumn<bool> isFavorite =
-      GeneratedColumn<bool>('is_favorite', aliasedName, false,
+      GeneratedColumn<bool>('is_favorite', aliasedName, true,
           type: DriftSqlType.bool,
-          requiredDuringInsert: true,
+          requiredDuringInsert: false,
           defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
             SqlDialect.sqlite: 'CHECK ("is_favorite" IN (0, 1))',
             SqlDialect.mysql: '',
@@ -108,8 +108,6 @@ class $RestaurantTableTable extends RestaurantTable
           _isFavoriteMeta,
           isFavorite.isAcceptableOrUnknown(
               data['is_favorite']!, _isFavoriteMeta));
-    } else if (isInserting) {
-      context.missing(_isFavoriteMeta);
     }
     return context;
   }
@@ -133,7 +131,7 @@ class $RestaurantTableTable extends RestaurantTable
       rating: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}rating'])!,
       isFavorite: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}is_favorite'])!,
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_favorite']),
     );
   }
 
@@ -151,7 +149,7 @@ class RestaurantTableData extends DataClass
   final String pictureId;
   final String city;
   final double rating;
-  final bool isFavorite;
+  final bool? isFavorite;
   const RestaurantTableData(
       {required this.id,
       required this.name,
@@ -159,7 +157,7 @@ class RestaurantTableData extends DataClass
       required this.pictureId,
       required this.city,
       required this.rating,
-      required this.isFavorite});
+      this.isFavorite});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -169,7 +167,9 @@ class RestaurantTableData extends DataClass
     map['picture_id'] = Variable<String>(pictureId);
     map['city'] = Variable<String>(city);
     map['rating'] = Variable<double>(rating);
-    map['is_favorite'] = Variable<bool>(isFavorite);
+    if (!nullToAbsent || isFavorite != null) {
+      map['is_favorite'] = Variable<bool>(isFavorite);
+    }
     return map;
   }
 
@@ -181,7 +181,9 @@ class RestaurantTableData extends DataClass
       pictureId: Value(pictureId),
       city: Value(city),
       rating: Value(rating),
-      isFavorite: Value(isFavorite),
+      isFavorite: isFavorite == null && nullToAbsent
+          ? const Value.absent()
+          : Value(isFavorite),
     );
   }
 
@@ -195,7 +197,7 @@ class RestaurantTableData extends DataClass
       pictureId: serializer.fromJson<String>(json['pictureId']),
       city: serializer.fromJson<String>(json['city']),
       rating: serializer.fromJson<double>(json['rating']),
-      isFavorite: serializer.fromJson<bool>(json['isFavorite']),
+      isFavorite: serializer.fromJson<bool?>(json['isFavorite']),
     );
   }
   @override
@@ -208,7 +210,7 @@ class RestaurantTableData extends DataClass
       'pictureId': serializer.toJson<String>(pictureId),
       'city': serializer.toJson<String>(city),
       'rating': serializer.toJson<double>(rating),
-      'isFavorite': serializer.toJson<bool>(isFavorite),
+      'isFavorite': serializer.toJson<bool?>(isFavorite),
     };
   }
 
@@ -219,7 +221,7 @@ class RestaurantTableData extends DataClass
           String? pictureId,
           String? city,
           double? rating,
-          bool? isFavorite}) =>
+          Value<bool?> isFavorite = const Value.absent()}) =>
       RestaurantTableData(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -227,7 +229,7 @@ class RestaurantTableData extends DataClass
         pictureId: pictureId ?? this.pictureId,
         city: city ?? this.city,
         rating: rating ?? this.rating,
-        isFavorite: isFavorite ?? this.isFavorite,
+        isFavorite: isFavorite.present ? isFavorite.value : this.isFavorite,
       );
   @override
   String toString() {
@@ -266,7 +268,7 @@ class RestaurantTableCompanion extends UpdateCompanion<RestaurantTableData> {
   final Value<String> pictureId;
   final Value<String> city;
   final Value<double> rating;
-  final Value<bool> isFavorite;
+  final Value<bool?> isFavorite;
   final Value<int> rowid;
   const RestaurantTableCompanion({
     this.id = const Value.absent(),
@@ -285,15 +287,14 @@ class RestaurantTableCompanion extends UpdateCompanion<RestaurantTableData> {
     required String pictureId,
     required String city,
     required double rating,
-    required bool isFavorite,
+    this.isFavorite = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         name = Value(name),
         description = Value(description),
         pictureId = Value(pictureId),
         city = Value(city),
-        rating = Value(rating),
-        isFavorite = Value(isFavorite);
+        rating = Value(rating);
   static Insertable<RestaurantTableData> custom({
     Expression<String>? id,
     Expression<String>? name,
@@ -323,7 +324,7 @@ class RestaurantTableCompanion extends UpdateCompanion<RestaurantTableData> {
       Value<String>? pictureId,
       Value<String>? city,
       Value<double>? rating,
-      Value<bool>? isFavorite,
+      Value<bool?>? isFavorite,
       Value<int>? rowid}) {
     return RestaurantTableCompanion(
       id: id ?? this.id,

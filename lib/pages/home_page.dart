@@ -4,9 +4,7 @@ import 'package:restaurant_app/components/bottom_nav_bar.dart';
 import 'package:restaurant_app/db/app_database.dart';
 import 'package:restaurant_app/pages/restaurant_page.dart';
 import 'package:restaurant_app/provider/restaurant_favorite_provider.dart';
-import 'package:restaurant_app/provider/restaurant_provider.dart';
 
-import '../data/api/api_service.dart';
 import 'favorite_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -21,12 +19,9 @@ class _HomePageState extends State<HomePage> {
 
   //pages to display
   final List<Widget> _pages = [
-    ChangeNotifierProvider<RestaurantProvider>(
-      create: (_) => RestaurantProvider(apiService: ApiService()),
-      child: const RestaurantPage(),
-    ),
+    const RestaurantPage(),
     ChangeNotifierProvider<RestaurantFavoriteProvider>(
-      create: (_) => RestaurantFavoriteProvider(appDatabase: AppDatabase()),
+      create: (_) => RestaurantFavoriteProvider(appDatabase: InitDatabase.database!),
         child: const FavoritePage()),
   ];
 

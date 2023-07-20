@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:restaurant_app/db/app_database.dart';
 
 
-enum ResultFavoriteState { loading, noData, hasData, error }
+enum ResultDetailFavoriteState { loading, noData, hasData, error }
 
 class DetailRestaurantFavoriteProvider extends ChangeNotifier {
   final AppDatabase appDatabase;
@@ -11,25 +11,25 @@ class DetailRestaurantFavoriteProvider extends ChangeNotifier {
   DetailRestaurantFavoriteProvider({required this.appDatabase});
 
   RestaurantTableData? _restaurantResult;
-  ResultFavoriteState? _state;
+  ResultDetailFavoriteState? _state;
   String _message = '';
 
   String get message => _message;
 
   RestaurantTableData? get result => _restaurantResult;
 
-  ResultFavoriteState? get state => _state;
+  ResultDetailFavoriteState? get state => _state;
 
   Future<dynamic> getDetailRestaurantFavorite(String id) async {
     try {
-      _state = ResultFavoriteState.loading;
+      _state = ResultDetailFavoriteState.loading;
       notifyListeners();
       final data = await appDatabase.restaurantDao.getRestaurantById(id);
-      _state = ResultFavoriteState.hasData;
+      _state = ResultDetailFavoriteState.hasData;
       notifyListeners();
       return _restaurantResult = data;
     } catch (e) {
-      _state = ResultFavoriteState.error;
+      _state = ResultDetailFavoriteState.error;
       notifyListeners();
       return _message = 'There is unknown error';
     }

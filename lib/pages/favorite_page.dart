@@ -42,9 +42,11 @@ class FavoritePage extends StatelessWidget {
             ),
           );
         } else if (state.state == ResultState.noData) {
-          return Center(
-            child: Material(
-              child: Text(state.message),
+          return Expanded(
+            child: Center(
+              child: Material(
+                child: Text(state.message),
+              ),
             ),
           );
         } else if (state.state == ResultState.error) {

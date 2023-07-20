@@ -35,3 +35,12 @@ LazyDatabase _openConnection() {
     return NativeDatabase.createInBackground(file);
   });
 }
+
+class InitDatabase {
+  static AppDatabase? _database;
+
+  static AppDatabase? get database {
+    _database ??= AppDatabase();
+    return _database;
+  }
+}

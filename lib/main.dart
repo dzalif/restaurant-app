@@ -9,6 +9,8 @@ import 'package:restaurant_app/pages/search_page.dart';
 import 'package:restaurant_app/provider/add_restaurant_favorite_provider.dart';
 import 'package:restaurant_app/provider/detail_restaurant_favorite_provider.dart';
 import 'package:restaurant_app/provider/detail_restaurant_provider.dart';
+import 'package:restaurant_app/provider/remove_restaurant_favorite_provider.dart';
+import 'package:restaurant_app/provider/restaurant_provider.dart';
 import 'package:restaurant_app/provider/search_provider.dart';
 
 import 'common/navigation.dart';
@@ -22,12 +24,14 @@ class RestaurantApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appDatabase = InitDatabase.database;
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => SearchProvider(apiService: ApiService())),
         ChangeNotifierProvider(create: (_) => DetailRestaurantProvider(apiService: ApiService())),
-        ChangeNotifierProvider(create: (_) => AddRestaurantFavoriteProvider(appDatabase: AppDatabase())),
-        ChangeNotifierProvider(create: (_) => DetailRestaurantFavoriteProvider(appDatabase: AppDatabase())),
+        ChangeNotifierProvider(create: (_) => RestaurantProvider(apiService: ApiService())),
+        ChangeNotifierProvider(create: (_) => AddRestaurantFavoriteProvider(appDatabase: appDatabase!)),
+        ChangeNotifierProvider(create: (_) => RemoveRestaurantFavoriteProvider(appDatabase: appDatabase!)),
       ],
       child: MaterialApp(
         navigatorKey: navigatorKey,
@@ -42,7 +46,9 @@ class RestaurantApp extends StatelessWidget {
           SearchPage.routeName: (context) =>
               const SearchPage(),
           DetailRestaurantPage.routeName: (context) =>
-              DetailRestaurantPage(id: ModalRoute.of(context)?.settings.arguments as String,),
+              ChangeNotifierProvider(
+                create: (_) => DetailRestaurantFavoriteProvider(appDatabase: appDatabase!),
+                  child: DetailRestaurantPage(id: ModalRoute.of(context)?.settings.arguments as String,)),
           DetailReviewPage.routeName: (context) =>
               DetailReviewPage(reviews: ModalRoute.of(context)?.settings.arguments as dynamic,),
         },

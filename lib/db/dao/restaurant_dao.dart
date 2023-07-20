@@ -15,7 +15,11 @@ class RestaurantDao extends DatabaseAccessor<AppDatabase> with _$RestaurantDaoMi
 
   Future<RestaurantTableData> getRestaurantById(String id) => (select(restaurantTable)..where((restaurant) => restaurant.id.equals(id))).getSingle();
 
-  Future deleteRestaurantById(String id) => (delete(restaurantTable)..where((t) => t.id.equals(id))..where((t) =>  t.id.equals(id))).go();
+  Future deleteRestaurantById(String id) => (delete(restaurantTable)..where((t) => t.id.equals(id))).go();
+
+  Future updateIsFavorite(String id) => (update(restaurantTable)
+    ..where((t) => t.id.equals(id)))
+      .write(const RestaurantTableCompanion(isFavorite: Value(false)));
 }
 
 

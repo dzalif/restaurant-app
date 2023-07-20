@@ -5,6 +5,8 @@ import 'package:restaurant_app/pages/detail_review_page.dart';
 import 'package:restaurant_app/provider/add_restaurant_favorite_provider.dart';
 import 'package:restaurant_app/provider/detail_restaurant_favorite_provider.dart';
 import 'package:restaurant_app/provider/detail_restaurant_provider.dart';
+import 'package:restaurant_app/provider/remove_restaurant_favorite_provider.dart';
+import 'dart:async';
 
 import '../common/navigation.dart';
 import '../db/app_database.dart';
@@ -43,21 +45,29 @@ class _DetailRestaurantPageState extends State<DetailRestaurantPage> {
         padding: const EdgeInsets.all(8.0),
         child: Consumer<DetailRestaurantFavoriteProvider>(
           builder: (context, state, _) {
-            // Check isFavorite null atau tidak
-            if (state.result?.isFavorite != null) {
-              _isFavorite = state.result!.isFavorite;
+            if (state.state == ResultDetailFavoriteState.error) {
+              _isFavorite = false;
             }
-
+            if (state.state == ResultDetailFavoriteState.hasData) {
+              _isFavorite = state.result!.isFavorite!;
+            }
             return FloatingActionButton(
               onPressed: () {
-                setState(() {
-                  _isFavorite = !_isFavorite;
-                });
-                _addToFavorite();
-                _showSnackBar();
+                if (state.result == null) {
+                  _addToFavorite();
+                  _showSnackBar(true);
+                } else {
+                  if (state.result!.isFavorite!) {
+                    _removeFromFavorite();
+                    _showSnackBar(false);
+                  } else {
+                    _addToFavorite();
+                    _showSnackBar(true);
+                  }
+                }
               },
               child: Icon(
-                  _isFavorite ? Icons.favorite : Icons.favorite_border_outlined),
+                  state.result == null ? Icons.favorite_border_outlined : state.result!.isFavorite == null ? Icons.favorite_border_outlined : _isFavorite ? Icons.favorite : Icons.favorite_border_outlined),
             );
           },
         ),
@@ -295,10 +305,10 @@ class _DetailRestaurantPageState extends State<DetailRestaurantPage> {
     );
   }
 
-  void _showSnackBar() {
+  void _showSnackBar(bool isFavorite) {
     var snackBar = SnackBar(
       duration: const Duration(seconds: 1),
-      content: Text(_isFavorite
+      content: Text(isFavorite
           ? 'Berhasil menambahkan ke favorite!'
           : 'Berhasil hapus dari favorite!'),
     );
@@ -306,7 +316,21 @@ class _DetailRestaurantPageState extends State<DetailRestaurantPage> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  void _addToFavorite() {
+  void _addToFavorite() async {
+    final restaurant = await _getFavoriteRestaurant();
+    await Provider.of<AddRestaurantFavoriteProvider>(context, listen: false)
+        .addRestaurantToFavorite(restaurant);
+    await Provider.of<DetailRestaurantFavoriteProvider>(context, listen: false).getDetailRestaurantFavorite(widget.id!);
+  }
+
+  void _removeFromFavorite() async {
+    // Remove restaurant by id
+    await _remove();
+    // // Recall detail favorite restaurant
+    await Provider.of<DetailRestaurantFavoriteProvider>(context, listen: false).getDetailRestaurantFavorite(widget.id!);
+  }
+
+  Future<RestaurantTableData> _getFavoriteRestaurant() async {
     DetailRestaurant? restaurant =
         Provider.of<DetailRestaurantProvider>(context, listen: false).result?.restaurant;
 
@@ -317,9 +341,12 @@ class _DetailRestaurantPageState extends State<DetailRestaurantPage> {
         pictureId: restaurant.pictureId,
         city: restaurant.city,
         rating: restaurant.rating,
-        isFavorite: _isFavorite);
+        isFavorite: true);
 
-    Provider.of<AddRestaurantFavoriteProvider>(context, listen: false)
-        .addRestaurantToFavorite(data);
+    return data;
+  }
+
+  Future _remove() async {
+    await Provider.of<RemoveRestaurantFavoriteProvider>(context, listen: false).removeRestaurantFavorite(widget.id!);
   }
 }

@@ -9,7 +9,7 @@ class MyBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 25),
+      padding: const EdgeInsets.only(bottom: 25),
       child: GNav(
         onTabChange: (value) => onTabChange!(value),
         mainAxisAlignment: MainAxisAlignment.center,
@@ -18,7 +18,7 @@ class MyBottomNavBar extends StatelessWidget {
         tabActiveBorder: Border.all(color: Colors.black54),
         tabBorderRadius: 24,
         gap: 8,
-        tabs: [
+        tabs: const [
           GButton(icon: Icons.home, text: 'Home'),
           GButton(icon: Icons.favorite, text: 'Favorite'),
         ],
