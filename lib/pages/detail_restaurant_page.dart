@@ -1,8 +1,11 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/data/model/detail_restaurant_response.dart';
+import 'package:restaurant_app/data/model/review/add_review_request.dart';
 import 'package:restaurant_app/pages/detail_review_page.dart';
 import 'package:restaurant_app/provider/add_restaurant_favorite_provider.dart';
+import 'package:restaurant_app/provider/add_review_provider.dart';
 import 'package:restaurant_app/provider/detail_restaurant_favorite_provider.dart';
 import 'package:restaurant_app/provider/detail_restaurant_provider.dart';
 import 'package:restaurant_app/provider/remove_restaurant_favorite_provider.dart';
@@ -165,6 +168,18 @@ class _DetailRestaurantPageState extends State<DetailRestaurantPage> {
                           const SizedBox(height: 8),
                           _buildReviews(
                               state.result!.restaurant.customerReviews),
+                          const SizedBox(height: 16),
+                          ElevatedButton(onPressed: () {
+                            _showBottomSheet(context);
+                          }, child: const SizedBox(
+                            width: 120,
+                            child: Row(
+                              children: [
+                                Icon(Icons.add),
+                                Text('Add Review'),
+                              ],
+                            ),
+                          ))
                         ],
                       ),
                     ),
@@ -348,5 +363,69 @@ class _DetailRestaurantPageState extends State<DetailRestaurantPage> {
 
   Future _remove() async {
     await Provider.of<RemoveRestaurantFavoriteProvider>(context, listen: false).removeRestaurantFavorite(widget.id!);
+  }
+
+  void _showBottomSheet(BuildContext context) {
+    final _nameController = TextEditingController();
+    final _reviewController = TextEditingController();
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            height: MediaQuery.of(context).size.height * 0.85,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                      hintText: 'Tulis nama kamu..'
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _reviewController,
+                  maxLines: 3,
+                  decoration: const InputDecoration(
+                    hintText: 'Tulis review kamu..'
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ElevatedButton(onPressed: () {
+                      _addReview(_nameController.text, _reviewController.text);
+                    }, child: const Text('Submit')),
+                  ],
+                )
+                // Add more options or content here as needed
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
+
+  void _addReview(String name, String review) async {
+    var request = AddReviewRequest(id: widget.id!, name: name, review: review);
+    await Provider.of<AddReviewProvider>(context, listen: false)
+        .addReview(request);
+    Navigator.pop(context);
+    _showSnackBarReview();
+  }
+
+  void _showSnackBarReview() {
+    var snackBar = const SnackBar(
+      duration: Duration(seconds: 1),
+      content: Text('Berhasil menambahkan review!'),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

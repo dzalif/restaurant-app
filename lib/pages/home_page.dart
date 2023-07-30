@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_app/components/bottom_nav_bar.dart';
 import 'package:restaurant_app/db/app_database.dart';
 import 'package:restaurant_app/pages/restaurant_page.dart';
-import 'package:restaurant_app/pages/search_page.dart';
 import 'package:restaurant_app/pages/settings_page.dart';
 import 'package:restaurant_app/provider/restaurant_favorite_provider.dart';
 

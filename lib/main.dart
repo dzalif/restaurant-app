@@ -12,6 +12,7 @@ import 'package:restaurant_app/pages/home_page.dart';
 import 'package:restaurant_app/pages/search_page.dart';
 import 'package:restaurant_app/pages/settings_page.dart';
 import 'package:restaurant_app/provider/add_restaurant_favorite_provider.dart';
+import 'package:restaurant_app/provider/add_review_provider.dart';
 import 'package:restaurant_app/provider/detail_restaurant_favorite_provider.dart';
 import 'package:restaurant_app/provider/detail_restaurant_provider.dart';
 import 'package:restaurant_app/provider/remove_restaurant_favorite_provider.dart';
@@ -20,7 +21,6 @@ import 'package:restaurant_app/provider/search_provider.dart';
 import 'package:restaurant_app/utils/background_service.dart';
 import 'package:restaurant_app/utils/notification_helper.dart';
 import 'package:restaurant_app/utils/scheduling_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'common/navigation.dart';
 
@@ -58,6 +58,7 @@ class RestaurantApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AddRestaurantFavoriteProvider(appDatabase: appDatabase!)),
         ChangeNotifierProvider(create: (_) => RemoveRestaurantFavoriteProvider(appDatabase: appDatabase!)),
         ChangeNotifierProvider(create: (_) => SchedulingProvider()),
+        ChangeNotifierProvider(create: (_) => AddReviewProvider(apiService: ApiService())),
       ],
       child: MaterialApp(
         navigatorKey: navigatorKey,

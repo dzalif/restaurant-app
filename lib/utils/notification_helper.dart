@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:restaurant_app/data/model/list_restaurant_response.dart';
 import 'package:rxdart/rxdart.dart';
@@ -35,7 +36,7 @@ class NotificationHelper {
         onDidReceiveNotificationResponse: (NotificationResponse details) async {
           final payload = details.payload;
           if (payload != null) {
-            print('notification payload: ' + payload);
+            debugPrint('notification payload: ' + payload);
           }
           selectNotificationSubject.add(payload ?? 'empty payload');
         });
