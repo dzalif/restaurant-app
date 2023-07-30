@@ -22,6 +22,7 @@ class BackgroundService {
     IsolateNameServer.registerPortWithName(port.sendPort, _isolateName);
   }
 
+  @pragma('vm:entry-point')
   static Future<void> callback() async {
     print('Alarm fired!');
     final NotificationHelper notificationHelper = NotificationHelper();

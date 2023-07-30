@@ -45,6 +45,7 @@ dependencies:
   flutter_local_notifications: ^15.1.0+1
   rxdart: ^0.27.7
   intl: ^0.18.1
+  shared_preferences: ^2.2.0
 
 dev_dependencies:
   flutter_test:

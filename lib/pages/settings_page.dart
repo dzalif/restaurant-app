@@ -1,23 +1,39 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../utils/scheduling_provider.dart';
 import '../widgets/custom_dialog.dart';
 import '../widgets/platform_widget.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
+  static const routeName = '/settings_page';
   static const String settingsTitle = 'Settings';
 
   const SettingsPage({Key? key}) : super(key: key);
 
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  bool? _isSchedule;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _initPrefs();
+  }
+
+
   Widget _buildAndroid(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(settingsTitle),
+        title: const Text(SettingsPage.settingsTitle),
       ),
       body: _buildList(context),
     );
@@ -26,7 +42,7 @@ class SettingsPage extends StatelessWidget {
   Widget _buildIos(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: const CupertinoNavigationBar(
-        middle: Text(settingsTitle),
+        middle: Text(SettingsPage.settingsTitle),
       ),
       child: _buildList(context),
     );
@@ -37,60 +53,16 @@ class SettingsPage extends StatelessWidget {
       children: [
         Material(
           child: ListTile(
-            title: const Text('Dark Theme'),
-            trailing: Switch.adaptive(
-              value: false,
-              onChanged: (value) {
-                defaultTargetPlatform == TargetPlatform.iOS
-                    ? showCupertinoDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  builder: (context) {
-                    return CupertinoAlertDialog(
-                      title: const Text('Coming Soon!'),
-                      content: const Text('This feature will be coming soon!'),
-                      actions: [
-                        CupertinoDialogAction(
-                          child: const Text('Ok'),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                )
-                    : showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: const Text('Coming Soon!'),
-                      content: const Text('This feature will be coming soon!'),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Text('Ok'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        ),
-        Material(
-          child: ListTile(
             title: const Text('Scheduling Restaurant'),
             trailing: Consumer<SchedulingProvider>(
               builder: (context, scheduled, _) {
-                return Switch.adaptive(value: scheduled.isScheduled, onChanged: (value) async {
+                return Switch.adaptive(value: scheduled.isScheduled ?? _isSchedule ?? false, onChanged: (value) async {
                   if (Platform.isIOS) {
                     customDialog(context);
                   } else {
-                    scheduled.scheduledNews(value);
+                    final prefs = await SharedPreferences.getInstance();
+                    prefs.setBool('is_scheduled', value);
+                    scheduled.scheduledNews();
                   }
                 });
               },
@@ -107,5 +79,20 @@ class SettingsPage extends StatelessWidget {
       androidBuilder: _buildAndroid,
       iosBuilder: _buildIos,
     );
+  }
+
+  void _initPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool? isScheduled = prefs.getBool('is_scheduled');
+
+    if (isScheduled == null) {
+      setState(() {
+        _isSchedule = false;
+      });
+    } else {
+      setState(() {
+        _isSchedule = isScheduled;
+      });
+    }
   }
 }
