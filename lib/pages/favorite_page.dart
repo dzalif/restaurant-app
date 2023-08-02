@@ -25,12 +25,12 @@ class FavoritePage extends StatelessWidget {
   _buildList() {
     return Consumer<RestaurantFavoriteProvider>(
       builder: (context, state, _) {
-        if (state.state == ResultState.loading) {
+        if (state.state == ResultFavoriteState.loading) {
           return const Expanded(
             child: Center(
                 child: CircularProgressIndicator()),
           );
-        } else if (state.state == ResultState.hasData) {
+        } else if (state.state == ResultFavoriteState.hasData) {
           return Expanded(
             child: ListView.builder(
               shrinkWrap: true,
@@ -41,7 +41,7 @@ class FavoritePage extends StatelessWidget {
               },
             ),
           );
-        } else if (state.state == ResultState.noData) {
+        } else if (state.state == ResultFavoriteState.noData) {
           return Expanded(
             child: Center(
               child: Material(
@@ -49,7 +49,7 @@ class FavoritePage extends StatelessWidget {
               ),
             ),
           );
-        } else if (state.state == ResultState.error) {
+        } else if (state.state == ResultFavoriteState.error) {
           return Center(
             child: Material(
               child: Text(state.message),

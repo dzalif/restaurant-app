@@ -9,6 +9,7 @@ import 'package:restaurant_app/provider/add_review_provider.dart';
 import 'package:restaurant_app/provider/detail_restaurant_favorite_provider.dart';
 import 'package:restaurant_app/provider/detail_restaurant_provider.dart';
 import 'package:restaurant_app/provider/remove_restaurant_favorite_provider.dart';
+import 'package:restaurant_app/provider/restaurant_favorite_provider.dart';
 import 'dart:async';
 
 import '../common/navigation.dart';
@@ -43,170 +44,177 @@ class _DetailRestaurantPageState extends State<DetailRestaurantPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Consumer<DetailRestaurantFavoriteProvider>(
-          builder: (context, state, _) {
-            if (state.state == ResultDetailFavoriteState.error) {
-              _isFavorite = false;
-            }
-            if (state.state == ResultDetailFavoriteState.hasData) {
-              _isFavorite = state.result!.isFavorite!;
-            }
-            return FloatingActionButton(
-              onPressed: () {
-                if (state.result == null) {
-                  _addToFavorite();
-                  _showSnackBar(true);
-                } else {
-                  if (state.result!.isFavorite!) {
-                    _removeFromFavorite();
-                    _showSnackBar(false);
-                  } else {
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pop(context);
+        Provider.of<RestaurantFavoriteProvider>(context, listen: false).getFavoriteRestaurant();
+        return true;
+      },
+      child: Scaffold(
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Consumer<DetailRestaurantFavoriteProvider>(
+            builder: (context, state, _) {
+              if (state.state == ResultDetailFavoriteState.error) {
+                _isFavorite = false;
+              }
+              if (state.state == ResultDetailFavoriteState.hasData) {
+                _isFavorite = state.result!.isFavorite!;
+              }
+              return FloatingActionButton(
+                onPressed: () {
+                  if (state.result == null) {
                     _addToFavorite();
                     _showSnackBar(true);
+                  } else {
+                    if (state.result!.isFavorite!) {
+                      _removeFromFavorite();
+                      _showSnackBar(false);
+                    } else {
+                      _addToFavorite();
+                      _showSnackBar(true);
+                    }
                   }
-                }
-              },
-              child: Icon(
-                  state.result == null ? Icons.favorite_border_outlined : state.result!.isFavorite == null ? Icons.favorite_border_outlined : _isFavorite ? Icons.favorite : Icons.favorite_border_outlined),
-            );
-          },
+                },
+                child: Icon(
+                    state.result == null ? Icons.favorite_border_outlined : state.result!.isFavorite == null ? Icons.favorite_border_outlined : _isFavorite ? Icons.favorite : Icons.favorite_border_outlined),
+              );
+            },
+          ),
         ),
-      ),
-      body: Consumer<DetailRestaurantProvider>(
-        builder: (context, state, _) {
-          if (state.state == ResultState.loading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state.state == ResultState.hasData) {
-            return CustomScrollView(
-              slivers: [
-                SliverAppBar(
-                  pinned: false,
-                  expandedHeight: 300,
-                  flexibleSpace: FlexibleSpaceBar(
-                    title: const Text(''),
-                    background: Image.network(
-                      'https://restaurant-api.dicoding.dev/images/medium/${state.result?.restaurant.pictureId}',
-                      fit: BoxFit.cover,
-                      width: MediaQuery.of(context).size.width,
-                    ),
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: SingleChildScrollView(
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            state.result!.restaurant.name,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
-                          ),
-                          Text(
-                              '${state.result!.restaurant.city}, ${state.result!.restaurant.address}'),
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.star,
-                                color: Colors.amber,
-                                size: 14,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                state.result!.restaurant.rating.toString(),
-                                style: const TextStyle(color: Colors.amber),
-                              )
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          Text(state.result!.restaurant.description),
-                          const SizedBox(height: 16),
-                          const Text(
-                            'Kategori',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          _buildCategories(state.result!.restaurant.categories),
-                          const Text(
-                            'Menu',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          _buildFoodMenus(state.result!.restaurant.menus),
-                          const SizedBox(height: 16),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                'Reviews',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigation.intentWithData(
-                                      DetailReviewPage.routeName,
-                                      state.result!.restaurant.customerReviews);
-                                },
-                                child: const Row(
-                                  children: [
-                                    Text(
-                                      'See All',
-                                      style: TextStyle(color: Colors.amber),
-                                    ),
-                                    Icon(
-                                      Icons.arrow_forward,
-                                      color: Colors.amber,
-                                      size: 14,
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          _buildReviews(
-                              state.result!.restaurant.customerReviews),
-                          const SizedBox(height: 16),
-                          ElevatedButton(onPressed: () {
-                            _showBottomSheet(context);
-                          }, child: const SizedBox(
-                            width: 120,
-                            child: Row(
-                              children: [
-                                Icon(Icons.add),
-                                Text('Add Review'),
-                              ],
-                            ),
-                          ))
-                        ],
+        body: Consumer<DetailRestaurantProvider>(
+          builder: (context, state, _) {
+            if (state.state == ResultState.loading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state.state == ResultState.hasData) {
+              return CustomScrollView(
+                slivers: [
+                  SliverAppBar(
+                    pinned: false,
+                    expandedHeight: 300,
+                    flexibleSpace: FlexibleSpaceBar(
+                      title: const Text(''),
+                      background: Image.network(
+                        'https://restaurant-api.dicoding.dev/images/medium/${state.result?.restaurant.pictureId}',
+                        fit: BoxFit.cover,
+                        width: MediaQuery.of(context).size.width,
                       ),
                     ),
                   ),
-                )
-              ],
-            );
-          } else if (state.state == ResultState.noData) {
-            return Center(
-              child: Material(
-                child: Text(state.message),
-              ),
-            );
-          } else if (state.state == ResultState.error) {
-            return Center(
-              child: Material(
-                child: Text(state.message),
-              ),
-            );
-          } else {
-            return const Center(
-              child: Material(
-                child: Text(''),
-              ),
-            );
-          }
-        },
+                  SliverToBoxAdapter(
+                    child: SingleChildScrollView(
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              state.result!.restaurant.name,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 16),
+                            ),
+                            Text(
+                                '${state.result!.restaurant.city}, ${state.result!.restaurant.address}'),
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.star,
+                                  color: Colors.amber,
+                                  size: 14,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  state.result!.restaurant.rating.toString(),
+                                  style: const TextStyle(color: Colors.amber),
+                                )
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Text(state.result!.restaurant.description),
+                            const SizedBox(height: 16),
+                            const Text(
+                              'Kategori',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            _buildCategories(state.result!.restaurant.categories),
+                            const Text(
+                              'Menu',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            _buildFoodMenus(state.result!.restaurant.menus),
+                            const SizedBox(height: 16),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  'Reviews',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigation.intentWithData(
+                                        DetailReviewPage.routeName,
+                                        state.result!.restaurant.customerReviews);
+                                  },
+                                  child: const Row(
+                                    children: [
+                                      Text(
+                                        'See All',
+                                        style: TextStyle(color: Colors.amber),
+                                      ),
+                                      Icon(
+                                        Icons.arrow_forward,
+                                        color: Colors.amber,
+                                        size: 14,
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            _buildReviews(
+                                state.result!.restaurant.customerReviews),
+                            const SizedBox(height: 16),
+                            ElevatedButton(onPressed: () {
+                              _showBottomSheet(context);
+                            }, child: const SizedBox(
+                              width: 120,
+                              child: Row(
+                                children: [
+                                  Icon(Icons.add),
+                                  Text('Add Review'),
+                                ],
+                              ),
+                            ))
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              );
+            } else if (state.state == ResultState.noData) {
+              return Center(
+                child: Material(
+                  child: Text(state.message),
+                ),
+              );
+            } else if (state.state == ResultState.error) {
+              return Center(
+                child: Material(
+                  child: Text(state.message),
+                ),
+              );
+            } else {
+              return const Center(
+                child: Material(
+                  child: Text(''),
+                ),
+              );
+            }
+          },
+        ),
       ),
     );
   }

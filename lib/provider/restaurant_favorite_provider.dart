@@ -3,41 +3,41 @@ import 'package:flutter/material.dart';
 import 'package:restaurant_app/db/app_database.dart';
 
 
-enum ResultState { loading, noData, hasData, error }
+enum ResultFavoriteState { loading, noData, hasData, error }
 
 class RestaurantFavoriteProvider extends ChangeNotifier {
   final AppDatabase appDatabase;
 
   RestaurantFavoriteProvider({required this.appDatabase}) {
-    _getFavoriteRestaurant();
+    getFavoriteRestaurant();
   }
 
   late List<RestaurantTableData> _restaurantResult;
-  late ResultState _state;
+  late ResultFavoriteState _state;
   String _message = '';
 
   String get message => _message;
 
   List<RestaurantTableData> get result => _restaurantResult;
 
-  ResultState get state => _state;
+  ResultFavoriteState get state => _state;
 
-  Future<dynamic> _getFavoriteRestaurant() async {
+  Future<dynamic> getFavoriteRestaurant() async {
     try {
-      _state = ResultState.loading;
+      _state = ResultFavoriteState.loading;
       notifyListeners();
       final data = await appDatabase.restaurantDao.getRestaurants();
       if (data.isEmpty) {
-        _state = ResultState.noData;
+        _state = ResultFavoriteState.noData;
         notifyListeners();
         return _message = 'Empty Data';
       } else {
-        _state = ResultState.hasData;
+        _state = ResultFavoriteState.hasData;
         notifyListeners();
         return _restaurantResult = data;
       }
     } catch (e) {
-      _state = ResultState.error;
+      _state = ResultFavoriteState.error;
       notifyListeners();
       return _message = 'There is unknown error';
     }

@@ -16,6 +16,7 @@ import 'package:restaurant_app/provider/add_review_provider.dart';
 import 'package:restaurant_app/provider/detail_restaurant_favorite_provider.dart';
 import 'package:restaurant_app/provider/detail_restaurant_provider.dart';
 import 'package:restaurant_app/provider/remove_restaurant_favorite_provider.dart';
+import 'package:restaurant_app/provider/restaurant_favorite_provider.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
 import 'package:restaurant_app/provider/search_provider.dart';
 import 'package:restaurant_app/utils/background_service.dart';
@@ -57,6 +58,7 @@ class RestaurantApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => RestaurantProvider(apiService: ApiService(null))),
         ChangeNotifierProvider(create: (_) => AddRestaurantFavoriteProvider(appDatabase: appDatabase!)),
         ChangeNotifierProvider(create: (_) => RemoveRestaurantFavoriteProvider(appDatabase: appDatabase!)),
+        ChangeNotifierProvider(create: (_) => RestaurantFavoriteProvider(appDatabase: appDatabase!)),
         ChangeNotifierProvider(create: (_) => SchedulingProvider()),
         ChangeNotifierProvider(create: (_) => AddReviewProvider(apiService: ApiService(null))),
       ],

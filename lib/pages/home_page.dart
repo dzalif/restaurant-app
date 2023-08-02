@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:restaurant_app/components/bottom_nav_bar.dart';
-import 'package:restaurant_app/db/app_database.dart';
 import 'package:restaurant_app/pages/restaurant_page.dart';
 import 'package:restaurant_app/pages/settings_page.dart';
-import 'package:restaurant_app/provider/restaurant_favorite_provider.dart';
 
 import '../common/navigation.dart';
 import 'favorite_page.dart';
@@ -22,9 +19,7 @@ class _HomePageState extends State<HomePage> {
   //pages to display
   final List<Widget> _pages = [
     const RestaurantPage(),
-    ChangeNotifierProvider<RestaurantFavoriteProvider>(
-      create: (_) => RestaurantFavoriteProvider(appDatabase: InitDatabase.database!),
-        child: const FavoritePage()),
+    const FavoritePage(),
   ];
 
   @override
