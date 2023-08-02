@@ -25,7 +25,7 @@ class BackgroundService {
   @pragma('vm:entry-point')
   static Future<void> callback() async {
     final NotificationHelper notificationHelper = NotificationHelper();
-    var result = await ApiService().getListRestaurant();
+    var result = await ApiService(null).getListRestaurant();
     await notificationHelper.showNotification(
         flutterLocalNotificationsPlugin, result);
 

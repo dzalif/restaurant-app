@@ -52,13 +52,13 @@ class RestaurantApp extends StatelessWidget {
     final appDatabase = InitDatabase.database;
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => SearchProvider(apiService: ApiService())),
-        ChangeNotifierProvider(create: (_) => DetailRestaurantProvider(apiService: ApiService())),
-        ChangeNotifierProvider(create: (_) => RestaurantProvider(apiService: ApiService())),
+        ChangeNotifierProvider(create: (_) => SearchProvider(apiService: ApiService(null))),
+        ChangeNotifierProvider(create: (_) => DetailRestaurantProvider(apiService: ApiService(null))),
+        ChangeNotifierProvider(create: (_) => RestaurantProvider(apiService: ApiService(null))),
         ChangeNotifierProvider(create: (_) => AddRestaurantFavoriteProvider(appDatabase: appDatabase!)),
         ChangeNotifierProvider(create: (_) => RemoveRestaurantFavoriteProvider(appDatabase: appDatabase!)),
         ChangeNotifierProvider(create: (_) => SchedulingProvider()),
-        ChangeNotifierProvider(create: (_) => AddReviewProvider(apiService: ApiService())),
+        ChangeNotifierProvider(create: (_) => AddReviewProvider(apiService: ApiService(null))),
       ],
       child: MaterialApp(
         navigatorKey: navigatorKey,
