@@ -12,10 +12,10 @@ class ApiService {
 
   ApiService(this.client);
 
-  static const String _baseUrl = 'https://restaurant-api.dicoding.dev/';
+  static const String _baseUrl = 'https://restaurant-api.dicoding.dev';
 
   Future<ListRestaurantResponse> getListRestaurant() async {
-    final response = await http.get(Uri.parse("$_baseUrl/list"));
+    final response = await client!.get(Uri.parse("$_baseUrl/list"));
     if (response.statusCode == 200) {
       return ListRestaurantResponse.fromJson(json.decode(response.body));
     } else {
@@ -24,7 +24,7 @@ class ApiService {
   }
 
   Future<SearchRestaurantResponse> searchRestaurant(String? query) async {
-    final response = await http.get(Uri.parse("$_baseUrl/search?q=$query"));
+    final response = await client!.get(Uri.parse("$_baseUrl/search?q=$query"));
     if (response.statusCode == 200) {
       return SearchRestaurantResponse.fromJson(json.decode(response.body));
     } else {
@@ -33,7 +33,7 @@ class ApiService {
   }
 
   Future<DetailRestaurantResponse> getDetailRestaurant(String? id) async {
-    final response = await http.get(Uri.parse("$_baseUrl/detail/$id"));
+    final response = await client!.get(Uri.parse("$_baseUrl/detail/$id"));
     if (response.statusCode == 200) {
       return DetailRestaurantResponse.fromJson(json.decode(response.body));
     } else {
@@ -42,7 +42,7 @@ class ApiService {
   }
 
   Future<AddReviewResponse> addReview(AddReviewRequest request) async {
-    final response = await http.post(Uri.parse("$_baseUrl/review"), body: request.toJson());
+    final response = await client!.post(Uri.parse("$_baseUrl/review"), body: request.toJson());
     if (response.statusCode == 200) {
       return AddReviewResponse.fromJson(json.decode(response.body));
     } else {

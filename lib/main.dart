@@ -22,6 +22,7 @@ import 'package:restaurant_app/provider/search_provider.dart';
 import 'package:restaurant_app/utils/background_service.dart';
 import 'package:restaurant_app/utils/notification_helper.dart';
 import 'package:restaurant_app/utils/scheduling_provider.dart';
+import 'package:http/http.dart' as http;
 
 import 'common/navigation.dart';
 
@@ -53,14 +54,14 @@ class RestaurantApp extends StatelessWidget {
     final appDatabase = InitDatabase.database;
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => SearchProvider(apiService: ApiService(null))),
-        ChangeNotifierProvider(create: (_) => DetailRestaurantProvider(apiService: ApiService(null))),
-        ChangeNotifierProvider(create: (_) => RestaurantProvider(apiService: ApiService(null))),
+        ChangeNotifierProvider(create: (_) => SearchProvider(apiService: ApiService(http.Client()))),
+        ChangeNotifierProvider(create: (_) => DetailRestaurantProvider(apiService: ApiService(http.Client()))),
+        ChangeNotifierProvider(create: (_) => RestaurantProvider(apiService: ApiService(http.Client()))),
         ChangeNotifierProvider(create: (_) => AddRestaurantFavoriteProvider(appDatabase: appDatabase!)),
         ChangeNotifierProvider(create: (_) => RemoveRestaurantFavoriteProvider(appDatabase: appDatabase!)),
         ChangeNotifierProvider(create: (_) => RestaurantFavoriteProvider(appDatabase: appDatabase!)),
         ChangeNotifierProvider(create: (_) => SchedulingProvider()),
-        ChangeNotifierProvider(create: (_) => AddReviewProvider(apiService: ApiService(null))),
+        ChangeNotifierProvider(create: (_) => AddReviewProvider(apiService: ApiService(http.Client()))),
       ],
       child: MaterialApp(
         navigatorKey: navigatorKey,
