@@ -21,7 +21,7 @@ class SchedulingProvider extends ChangeNotifier {
     if (isScheduled!) {
       notifyListeners();
       return await AndroidAlarmManager.periodic(
-        const Duration(minutes: 2),
+        const Duration(hours: 24),
         1,
         BackgroundService.callback,
         startAt: DateTimeHelper.format(),
